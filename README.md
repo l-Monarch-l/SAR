@@ -53,4 +53,7 @@ Fullstack-приложение для ведения базы знаний (ло
   <img width="1894" height="929" alt="image" src="https://github.com/user-attachments/assets/ee236cf5-46eb-4e7c-93de-763d60627027" />
 
   Frontend: http://localhost:5173
+     
   Backend API: http://localhost:3001
+     
+  Автор: l-Monarch-l

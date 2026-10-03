@@ -51,6 +51,8 @@ Fullstack-приложение для ведения базы знаний (ло
   <img width="1765" height="939" alt="image" src="https://github.com/user-attachments/assets/d5155a5d-1bd4-4ffb-ae32-a52bd67f2e3f" />
   <img width="1911" height="939" alt="image" src="https://github.com/user-attachments/assets/6f50b13d-314c-46b2-acf9-a207b11a46bc" />
   <img width="1894" height="929" alt="image" src="https://github.com/user-attachments/assets/ee236cf5-46eb-4e7c-93de-763d60627027" />
+  <img width="1918" height="667" alt="{5326DCFC-47C7-46D9-9C60-62AA6F0FF9E0}" src="https://github.com/user-attachments/assets/829f5058-2194-4c38-b7a4-d7eff024bb32" />
+  <img width="1916" height="757" alt="{D64247A1-CBB4-498C-AE3D-FCBA040CFD76}" src="https://github.com/user-attachments/assets/28297d5d-ad24-4392-a264-2b1316607d59" />
 
   Frontend: http://localhost:5173
      

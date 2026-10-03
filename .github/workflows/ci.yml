@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
 
@@ -41,7 +41,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
@@ -100,12 +100,12 @@ jobs:
           cp .env backend/.env
 
       - name: Build and start containers
-        run: docker-compose up -d --build
+        run: docker compose up -d --build
 
       - name: Wait for backend to become healthy
         run: |
           echo "Ожидание healthcheck backend..."
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
             STATUS=$(docker inspect --format='{{.State.Health.Status}}' sar_backend 2>/dev/null || echo "starting")
             echo "Попытка $i: status=$STATUS"
             if [ "$STATUS" = "healthy" ]; then
@@ -114,13 +114,13 @@ jobs:
             fi
             sleep 2
           done
-          echo "Backend не стал healthy за 60 секунд"
-          docker-compose logs backend
+          echo "Backend не стал healthy за 120 секунд"
+          docker compose logs backend
           exit 1
 
       - name: Test /health endpoint
         run: |
-          curl --fail --silent http://localhost:3001/health | tee /tmp/health.json
+          curl --fail --silent http://localhost:3001/health
           echo ""
           echo "/health отвечает"
 
@@ -131,8 +131,8 @@ jobs:
 
       - name: Show logs on failure
         if: failure()
-        run: docker-compose logs
+        run: docker compose logs
 
       - name: Stop containers
         if: always()
-        run: docker-compose down
+        run: docker compose down

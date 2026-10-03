@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 
 function CharacterDetail() {
   const { id } = useParams();
+  const { isAdmin } = useAuth();
   const [character, setCharacter] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/api/characters/${id}`)
+    api.get(`/characters/${id}`)
       .then(response => {
         setCharacter(response.data);
         setLoading(false);
@@ -58,8 +60,12 @@ function CharacterDetail() {
       </div>
 
       <div style={{ marginTop: '2rem' }}>
-        <Link to={`/characters/${id}/edit`} className="button">Редактировать</Link>
-        <button onClick={handleDelete} className="danger">Удалить</button>
+        {isAdmin && (
+          <>
+            <Link to={`/characters/${id}/edit`} className="button">Редактировать</Link>
+            <button onClick={handleDelete} className="danger">Удалить</button>
+          </>
+        )}
         <button onClick={() => navigate(-1)} className="neutral">Назад</button>
       </div>
     </div>
@@ -68,7 +74,7 @@ function CharacterDetail() {
   async function handleDelete() {
     if (window.confirm('Удалить персонажа?')) {
       try {
-        await axios.delete(`/api/characters/${id}`);
+        await api.delete(`/characters/${id}`);
         window.location.href = '/characters';
       } catch (error) {
         console.error(error);

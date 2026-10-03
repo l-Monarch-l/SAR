@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 
 function StoryDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [story, setStory] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/api/stories/${id}`)
+    api.get(`/stories/${id}`)
       .then(response => {
         setStory(response.data);
         setLoading(false);
@@ -20,7 +22,7 @@ function StoryDetail() {
   const handleDelete = async () => {
     if (window.confirm('Удалить историю?')) {
       try {
-        await axios.delete(`http://localhost:3001/api/stories/${id}`);
+        await api.delete(`/stories/${id}`);
         navigate('/stories');
       } catch (error) {
         console.error(error);
@@ -85,8 +87,12 @@ function StoryDetail() {
       </div>
 
       <div>
-        <Link to={`/stories/${id}/edit`} className="button">Редактировать</Link>
-        <button onClick={handleDelete} className="danger">Удалить</button>
+        {isAdmin && (
+          <>
+            <Link to={`/stories/${id}/edit`} className="button">Редактировать</Link>
+            <button onClick={handleDelete} className="danger">Удалить</button>
+          </>
+        )}
         <button onClick={() => navigate(-1)} className="neutral">Назад</button>
       </div>
     </div>

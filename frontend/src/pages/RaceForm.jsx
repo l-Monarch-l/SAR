@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 
 function RaceForm() {
   const { id } = useParams();
@@ -20,11 +20,11 @@ function RaceForm() {
 
   useEffect(() => {
     // Загружаем списки для мультиселектов
-    axios.get('http://localhost:3001/api/lists/stories').then(res => setStories(res.data));
-    axios.get('http://localhost:3001/api/lists/articles').then(res => setArticles(res.data));
+    api.get('/lists/stories').then(res => setStories(res.data));
+    api.get('/lists/articles').then(res => setArticles(res.data));
 
     if (isEditing) {
-      axios.get(`http://localhost:3001/api/races/${id}`)
+      api.get(`/api/races/${id}`)
         .then(res => {
           const { name, description, features, stories, articles } = res.data;
           setFormData({
@@ -57,9 +57,9 @@ function RaceForm() {
     e.preventDefault();
     try {
       if (isEditing) {
-        await axios.put(`http://localhost:3001/api/races/${id}`, formData);
+        await api.put(`/races/${id}`, formData);
       } else {
-        await axios.post('http://localhost:3001/api/races', formData);
+        await api.post('/races', formData);
       }
       navigate('/races');
     } catch (error) {

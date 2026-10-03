@@ -1,0 +1,40 @@
+.nav-auth {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-main);
+}
+
+.nav-user {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.nav-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.5rem;
+  background-color: #1a2a1a;
+  border: 1px solid var(--border-color);
+  color: var(--accent-color);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  vertical-align: middle;
+}
+
+.nav-auth button {
+  margin-right: 0;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+.nav-auth a {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent-color);
+}

@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 
 function RaceDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [race, setRace] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/api/races/${id}`)
+    api.get(`/races/${id}`)
       .then(response => {
         setRace(response.data);
         setLoading(false);
@@ -20,7 +22,7 @@ function RaceDetail() {
   const handleDelete = async () => {
     if (window.confirm('Удалить расу?')) {
       try {
-        await axios.delete(`http://localhost:3001/api/races/${id}`);
+        await api.delete(`/races/${id}`);
         navigate('/races');
       } catch (error) {
         console.error(error);
@@ -85,8 +87,12 @@ function RaceDetail() {
       </div>
 
       <div>
-        <Link to={`/races/${id}/edit`} className="button">Редактировать</Link>
-        <button onClick={handleDelete} className="danger">Удалить</button>
+        {isAdmin && (
+          <>
+            <Link to={`/races/${id}/edit`} className="button">Редактировать</Link>
+            <button onClick={handleDelete} className="danger">Удалить</button>
+          </>
+        )}
         <button onClick={() => navigate(-1)} className="neutral">Назад</button>
       </div>
     </div>

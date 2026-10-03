@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 
 function CharactersList() {
   const [characters, setCharacters] = useState([]);
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
-    axios.get('http://localhost:3001/api/characters')
+    api.get('/characters')
       .then(response => setCharacters(response.data))
       .catch(error => console.error(error));
   }, []);
@@ -14,7 +16,9 @@ function CharactersList() {
   return (
     <div>
       <h1>Персонажи</h1>
-      <Link to="/characters/new">+ Добавить персонажа</Link>
+      {isAdmin && (
+        <Link to="/characters/new">+ Добавить персонажа</Link>
+      )}
       <ul>
         {characters.map(char => (
           <li key={char.id}>

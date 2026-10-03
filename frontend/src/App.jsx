@@ -13,6 +13,8 @@ import ArticlesList from './pages/ArticlesList';
 import ArticleDetail from './pages/ArticleDetail';
 import ArticleForm from './pages/ArticleForm';
 import NotFound from './pages/NotFound';
+import Login from './pages/Login'
+import Register from './pages/Register'
 
 function App() {
   return (
@@ -20,7 +22,7 @@ function App() {
       <Navbar />
       <div className="container">
         <Routes>
-          {/* Редирект с корня на персонажей (опционально) */}
+          {/* Редирект с корня на персонажей */}
           <Route path="/" element={<CharactersList />} />
           
           {/* Персонажи */}
@@ -47,6 +49,10 @@ function App() {
           <Route path="/articles/new" element={<ArticleForm />} />
           <Route path="/articles/:id/edit" element={<ArticleForm />} />
           
+          {/* Регистрация и логин */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
           {/* Ошибка 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>

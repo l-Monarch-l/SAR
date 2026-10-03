@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 
 function StoriesList() {
   const [stories, setStories] = useState([]);
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
-    axios.get('http://localhost:3001/api/stories')
+    api.get('/stories')
       .then(response => setStories(response.data))
       .catch(error => console.error(error));
   }, []);
@@ -14,16 +16,18 @@ function StoriesList() {
   return (
     <div>
       <h1>Истории</h1>
-      <Link to="/stories/new" className="button">+ Новая история</Link>
-      <ul>
-        {stories.map(story => (
-          <li key={story.id}>
-            <Link to={`/stories/${story.id}`}>
-              <strong>{story.title}</strong>
-            </Link>
-            {story.event_date && <span> ({story.event_date})</span>}
-          </li>
-        ))}
+      {isAdmin && (
+          <Link to="/stories/new" className="button">+ Новая история</Link>
+        )}
+        <ul>
+          {stories.map(story => (
+            <li key={story.id}>
+              <Link to={`/stories/${story.id}`}>
+                <strong>{story.title}</strong>
+              </Link>
+              {story.event_date && <span> ({story.event_date})</span>}
+            </li>
+          ))}
       </ul>
     </div>
   );

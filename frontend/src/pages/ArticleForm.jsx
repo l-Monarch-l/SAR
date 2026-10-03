@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 
 function ArticleForm() {
   const { id } = useParams();
@@ -20,12 +20,12 @@ function ArticleForm() {
   const [stories, setStories] = useState([]);
 
   useEffect(() => {
-    axios.get('/api/lists/characters').then(res => setCharacters(res.data));
-    axios.get('/api/lists/races').then(res => setRaces(res.data));
-    axios.get('/api/lists/stories').then(res => setStories(res.data));
+    api.get('/lists/characters').then(res => setCharacters(res.data));
+    api.get('/lists/races').then(res => setRaces(res.data));
+    api.get('/lists/stories').then(res => setStories(res.data));
 
     if (isEditing) {
-      axios.get(`/api/articles/${id}`)
+      api.get(`/articles/${id}`)
         .then(res => {
           const { title, content, characters, races, stories } = res.data;
           setFormData({
@@ -58,9 +58,9 @@ function ArticleForm() {
     e.preventDefault();
     try {
       if (isEditing) {
-        await axios.put(`/api/articles/${id}`, formData);
+        await api.put(`/articles/${id}`, formData);
       } else {
-        await axios.post('/api/articles', formData);
+        await api.post('/articles', formData);
       }
       navigate('/articles');
     } catch (error) {

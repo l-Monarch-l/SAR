@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 
 function CharacterForm() {
   const { id } = useParams();
@@ -21,12 +21,12 @@ function CharacterForm() {
 
   useEffect(() => {
     // Загружаем списки для выпадающих списков
-    axios.get('/api/races').then(res => setRaces(res.data));
-    axios.get('/api/stories').then(res => setStories(res.data));
-    axios.get('/api/articles').then(res => setArticles(res.data));
+    api.get('/races').then(res => setRaces(res.data));
+    api.get('/stories').then(res => setStories(res.data));
+    api.get('/articles').then(res => setArticles(res.data));
 
     if (isEditing) {
-      axios.get(`/api/characters/${id}`)
+      api.get(`/characters/${id}`)
         .then(res => {
           const { name, description, image_url, race, stories, articles } = res.data;
           setFormData({
@@ -60,9 +60,9 @@ function CharacterForm() {
     e.preventDefault();
     try {
       if (isEditing) {
-        await axios.put(`/api/characters/${id}`, formData);
+        await api.put(`/characters/${id}`, formData);
       } else {
-        await axios.post('/api/characters', formData);
+        await api.post('/characters', formData);
       }
       navigate('/characters');
     } catch (error) {

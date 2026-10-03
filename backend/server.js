@@ -1,12 +1,55 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const db = require('./database');
-
+const authRoutes = require('./routes/auth');
+const { authMiddleware, adminMiddleware } = require('./middleware/auth');
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+app.use('/api', (req, res, next) => {
+  if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+    // Исключение: /api/auth/* — регистрация и логин открыты
+    if (req.path.startsWith('/auth/')) {
+      return next();
+    }
+    return authMiddleware(req, res, () => adminMiddleware(req, res, next));
+  }
+  next();
+});
+app.use('/api/auth', authRoutes);
+
+// ==================== СЛУЖЕБНЫЕ ЭНДПОИНТЫ ====================
+
+// Корневой маршрут — информация о сервисе
+app.get('/', (req, res) => {
+  res.json({
+    service: 'SAR API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      characters: '/api/characters',
+      races: '/api/races',
+      stories: '/api/stories',
+      articles: '/api/articles',
+      lists: '/api/lists',
+      health: '/health'
+    }
+  });
+});
+
+// Health-check для мониторинга и CI/CD
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
 
 // ==================== ПЕРСОНАЖИ ====================
 
@@ -177,7 +220,7 @@ app.get('/api/races/:id', (req, res) => {
       `, [id], (err, articles) => {
         race.articles = articles || [];
 
-        // Получаем связанных персонажей (опционально)
+        // Получаем связанных персонажей
         db.all('SELECT id, name FROM characters WHERE race_id = ?', [id], (err, characters) => {
           race.characters = characters || [];
           res.json(race);

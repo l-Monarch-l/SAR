@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 
 function ArticleDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`/api/articles/${id}`)
+    api.get(`/articles/${id}`)
       .then(response => {
         setArticle(response.data);
         setLoading(false);
@@ -20,7 +22,7 @@ function ArticleDetail() {
   const handleDelete = async () => {
     if (window.confirm('Удалить статью?')) {
       try {
-        await axios.delete(`/api/articles/${id}`);
+        await api.delete(`/articles/${id}`);
         navigate('/articles');
       } catch (error) {
         console.error(error);
@@ -84,9 +86,13 @@ function ArticleDetail() {
       </div>
 
       <div>
-        <Link to={`/articles/${id}/edit`} className="button">Редактировать</Link>
-        <button onClick={handleDelete} className="danger">Удалить</button>
-              <button onClick={() => navigate(-1)} className="neutral">Назад</button>
+        {isAdmin && (
+          <>
+            <Link to={`/articles/${id}/edit`} className="button">Редактировать</Link>
+            <button onClick={handleDelete} className="danger">Удалить</button>
+          </>
+        )}
+        <button onClick={() => navigate(-1)} className="neutral">Назад</button>
       </div>
     </div>
   );

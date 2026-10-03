@@ -81,3 +81,58 @@ jobs:
           tags: sar-frontend:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  smoke:
+    name: Smoke test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create .env files for CI
+        run: |
+          cat > .env <<EOF
+          JWT_SECRET=ci-test-secret-do-not-use-in-production-32chars
+          ADMIN_EMAIL=ci@sar.local
+          ADMIN_PASSWORD=ci-test-password-12345
+          EOF
+          cp .env backend/.env
+
+      - name: Build and start containers
+        run: docker-compose up -d --build
+
+      - name: Wait for backend to become healthy
+        run: |
+          echo "Ожидание healthcheck backend..."
+          for i in $(seq 1 30); do
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' sar_backend 2>/dev/null || echo "starting")
+            echo "Попытка $i: status=$STATUS"
+            if [ "$STATUS" = "healthy" ]; then
+              echo "Backend здоров"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Backend не стал healthy за 60 секунд"
+          docker-compose logs backend
+          exit 1
+
+      - name: Test /health endpoint
+        run: |
+          curl --fail --silent http://localhost:3001/health | tee /tmp/health.json
+          echo ""
+          echo "/health отвечает"
+
+      - name: Test frontend is served
+        run: |
+          curl --fail --silent --head http://localhost/ | head -5
+          echo "Frontend отдаётся Nginx"
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker-compose logs
+
+      - name: Stop containers
+        if: always()
+        run: docker-compose down

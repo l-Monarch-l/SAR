@@ -1,4 +1,5 @@
 # SAR - lorebook
+[![CI](https://github.com/l-Monarch-l/SAR/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/l-Monarch-l/SAR/actions/workflows/ci.yml)
 
 Fullstack-приложение для ведения базы знаний (лорбука) вымышленной вселенной. Позволяет создавать, просматривать и редактировать информацию о персонажах, расах, историях и статьях.
 

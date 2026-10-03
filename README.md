@@ -1,7 +1,23 @@
-# SAR - lorebook
-[![CI](https://github.com/l-Monarch-l/SAR/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/l-Monarch-l/SAR/actions/workflows/ci.yml)
-
+# SAR - lorebook [![CI](https://github.com/l-Monarch-l/SAR/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/l-Monarch-l/SAR/actions/workflows/ci.yml)
+   
 Fullstack-приложение для ведения базы знаний (лорбука) вымышленной вселенной. Позволяет создавать, просматривать и редактировать информацию о персонажах, расах, историях и статьях.
+
+## CI (Continuous Integration)
+
+Проект использует **GitHub Actions** для автоматической проверки каждого пуша в `main`. Workflow запускается на Ubuntu и состоит из четырёх параллельных job'ов:
+
+| Job | Что проверяет | Время |
+|---|---|---|
+| **Backend** | Установка зависимостей, синтаксис `server.js` | ~15 сек |
+| **Frontend** | Установка зависимостей, production-сборка Vite | ~15 сек |
+| **Docker build** | Сборка Docker-образов backend и frontend (с кешем слоёв) | ~40 сек |
+| **Smoke test** | Поднимает всё приложение через `docker compose` и проверяет `/health` + отдачу фронта через Nginx | ~35 сек |
+
+**Что это даёт:**
+*   Любая опечатка или синтаксическая ошибка ловится **до** попадания в прод.
+*   Docker-сборка всегда проверяется — если `Dockerfile` сломается, CI это покажет.
+*   Smoke-тест гарантирует, что `docker-compose.yml` рабочий и контейнеры действительно стартуют.
+*   Кеш Docker-слоёв через GitHub Actions Cache ускоряет повторные сборки в ~5 раз.
 
 ## Возможности
 

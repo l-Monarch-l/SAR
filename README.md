@@ -6,18 +6,21 @@ Fullstack-приложение для ведения базы знаний (ло
 
 Проект использует **GitHub Actions** для автоматической проверки каждого пуша в `main`. Workflow запускается на Ubuntu и состоит из четырёх параллельных job'ов:
 
-| Job | Что проверяет | Время |
+| Job | Что делает | Время |
 |---|---|---|
-| **Backend** | Установка зависимостей, синтаксис `server.js` | ~15 сек |
-| **Frontend** | Установка зависимостей, production-сборка Vite | ~15 сек |
-| **Docker build** | Сборка Docker-образов backend и frontend (с кешем слоёв) | ~40 сек |
-| **Smoke test** | Поднимает всё приложение через `docker compose` и проверяет `/health` + отдачу фронта через Nginx | ~35 сек |
+| **Backend** | Установка зависимостей + ESLint + синтаксис `server.js` | ~10 сек |
+| **Frontend** | Установка зависимостей + ESLint + production-сборка Vite | ~15 сек |
+| **Publish to GHCR** | Сборка Docker-образов и публикация в GitHub Container Registry | ~60 сек |
+| **Smoke test** | Поднимает всё приложение через `docker compose` и проверяет `/health` + отдачу фронта через Nginx | ~40 сек |
 
 **Что это даёт:**
-*   Любая опечатка или синтаксическая ошибка ловится **до** попадания в прод.
-*   Docker-сборка всегда проверяется — если `Dockerfile` сломается, CI это покажет.
-*   Smoke-тест гарантирует, что `docker-compose.yml` рабочий и контейнеры действительно стартуют.
-*   Кеш Docker-слоёв через GitHub Actions Cache ускоряет повторные сборки в ~5 раз.
+- Опечатки и синтаксические ошибки ловятся **до** попадания в прод.
+- Docker-сборка проверяется на каждом коммите.
+- Smoke-тест гарантирует, что `docker-compose.yml` рабочий и контейнеры стартуют.
+- Кеш Docker-слоёв через GitHub Actions Cache ускоряет повторные сборки.
+- Образы автоматически публикуются в GHCR:
+  - Backend: [`ghcr.io/l-monarch-l/sar/backend`](https://github.com/l-Monarch-l/SAR/pkgs/container/sar%2Fbackend)
+  - Frontend: [`ghcr.io/l-monarch-l/sar/frontend`](https://github.com/l-Monarch-l/SAR/pkgs/container/sar%2Ffrontend)
 
 ## Возможности
 
